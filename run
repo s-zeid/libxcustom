@@ -1,0 +1,14 @@
+#!/bin/sh
+
+NAME=xcustomtitle
+
+dir=`dirname "$0"`; dir=`cd "$dir" && pwd`
+
+if [ $# -lt 2 ]; then
+ echo "Usage: $0 <title> <command> [args [...]]" >&2
+ exit 2
+fi
+
+export LD_PRELOAD="$dir/lib$NAME.so"
+export X_CUSTOM_TITLE="$1"; shift
+exec "$@"
