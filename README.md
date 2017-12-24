@@ -27,7 +27,7 @@ Building
 --------
 
 1.  Make sure you're on GNU/Linux (yes, the GNU part matters here) and have
-    the glibc and SDL 1.2 development packages installed, as well as GNU Make.
+    the glibc and X11 development packages installed, as well as GNU Make.
     
         fedora$ sudo yum install glibc-devel libX11-devel make
 
