@@ -13,7 +13,7 @@ lib${NAME}.so: lib${NAME}-native.so
 lib${NAME}%.so: main.c
 	$(CC) $(CFLAGS) -Wall -fPIC -DPIC -c main.c -o ${NAME}.o \
 	 $(if $(filter 32,$*),-m$*,)
-	$(LD) $(LDFLAGS) -ldl -shared -o $@ ${NAME}.o \
+	$(LD) $(LDFLAGS) -ldl -shared ${NAME}.o -o $@ \
 	 $(if $(filter 32,$*),-m elf_i386,)
 	rm -f ${NAME}.o
 

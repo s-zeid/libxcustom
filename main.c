@@ -1,7 +1,7 @@
 /* libxcustomtitle
  * An LD_PRELOAD hack to change X window titles.
  * 
- * Copyright (C) 2015, 2017 Scott Zeid.
+ * Copyright (C) 2015, 2017, 2019 S. Zeid.
  * https://code.s.zeid.me/libxcustomtitle
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy
@@ -40,12 +40,12 @@
 #include <X11/Xutil.h>
 
 
-Bool have_title() {
+static Bool have_title() {
  return getenv("X_CUSTOM_TITLE") != NULL;
 }
 
 
-char *get_title(char *default_title) {
+static char *get_title(char *default_title) {
  char* env_title = getenv("X_CUSTOM_TITLE");
  if (env_title != NULL)
   return env_title;
