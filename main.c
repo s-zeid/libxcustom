@@ -1,5 +1,5 @@
 /* libxcustomtitle
- * An LD_PRELOAD hack to change X window titles.
+ * An LD_PRELOAD library to change X window titles and/or class hints.
  * 
  * Copyright (C) 2015, 2017, 2019 S. Zeid.
  * https://code.s.zeid.me/libxcustomtitle
@@ -40,16 +40,56 @@
 #include <X11/Xutil.h>
 
 
+static char *getenv_default(char *var, char *default_value) {
+ char* env_value = getenv(var);
+ if (env_value != NULL)
+  return env_value;
+ return default_value;
+}
+
+
+static char *get_title(char *default_value) {
+ return getenv_default("X_CUSTOM_TITLE", default_value);
+}
+
+
+static char *get_class(char *default_value) {
+ return getenv_default("X_CUSTOM_CLASS", default_value);
+}
+
+
 static Bool have_title() {
  return getenv("X_CUSTOM_TITLE") != NULL;
 }
 
 
-static char *get_title(char *default_title) {
- char* env_title = getenv("X_CUSTOM_TITLE");
- if (env_title != NULL)
-  return env_title;
- return default_title;
+static Bool have_class() {
+ return getenv("X_CUSTOM_CLASS") != NULL;
+}
+
+
+static XClassHint* set_class(XClassHint *class_hints) {
+ if (have_class()) {
+  XClassHint *new_hint = XAllocClassHint();
+  char *class = get_class("");
+  new_hint->res_name = class;
+  new_hint->res_class = class;
+  return new_hint;
+ }
+ return class_hints;
+}
+
+
+static int (*next_XSetClassHint)(
+ Display *display, Window w,
+ XClassHint *class_hints
+) = NULL;
+
+int XSetClassHint(
+ Display *display, Window w,
+ XClassHint *class_hints
+) {
+ return next_XSetClassHint(display, w, class_hints);
 }
 
 
@@ -72,10 +112,10 @@ void XSetWMProperties(
   Xutf8TextListToTextProperty(display, (char **)&title, 1, XUTF8StringStyle, &new_prop);
   
   next_XSetWMProperties(display, w, &new_prop, &new_prop, argv, argc,
-                        normal_hints, wm_hints, class_hints);
+                        normal_hints, wm_hints, set_class(class_hints));
  } else {
   next_XSetWMProperties(display, w, window_name, icon_name, argv, argc,
-                        normal_hints, wm_hints, class_hints);
+                        normal_hints, wm_hints, set_class(class_hints));
  }
 }
 
@@ -96,7 +136,7 @@ void XmbSetWMProperties(
  next_XmbSetWMProperties(display, w,
                          (_Xconst char*)get_title((char*)window_name),
                          (_Xconst char*)get_title((char*)icon_name),
-                         argv, argc, normal_hints, wm_hints, class_hints);
+                         argv, argc, normal_hints, wm_hints, set_class(class_hints));
 }
 
 
@@ -116,7 +156,7 @@ void Xutf8SetWMProperties(
  next_Xutf8SetWMProperties(display, w,
                            (_Xconst char*)get_title((char*)window_name),
                            (_Xconst char*)get_title((char*)icon_name),
-                           argv, argc, normal_hints, wm_hints, class_hints);
+                           argv, argc, normal_hints, wm_hints, set_class(class_hints));
 }
 
 
@@ -171,6 +211,7 @@ void XSetTextProperty(
 
 void _init(void) {
  //next_%s = dlsym(RTLD_NEXT, "%s");
+ next_XSetClassHint = dlsym(RTLD_NEXT, "XSetClassHint");
  next_XSetWMProperties = dlsym(RTLD_NEXT, "XSetWMProperties");
  next_XmbSetWMProperties = dlsym(RTLD_NEXT, "XmbSetWMProperties");
  next_Xutf8SetWMProperties = dlsym(RTLD_NEXT, "Xutf8SetWMProperties");

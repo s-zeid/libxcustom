@@ -1,7 +1,7 @@
 libxcustomtitle
-An LD_PRELOAD hack to change X window titles.
+An LD_PRELOAD library to change X window titles and/or class hints.
 
-Copyright (C) 2015, 2017 Scott Zeid.
+Copyright (C) 2015, 2017, 2019 S. Zeid.
 https://code.s.zeid.me/libxcustomtitle
 
 Permission is hereby granted, free of charge, to any person obtaining a copy

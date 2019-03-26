@@ -4,11 +4,31 @@ NAME=xcustomtitle
 
 dir=`dirname "$0"`; dir=`cd "$dir" && pwd`
 
-if [ $# -lt 2 ]; then
- echo "Usage: $0 <title> <command> [args [...]]" >&2
- exit 2
-fi
 
-export LD_PRELOAD="$dir/lib$NAME.so"
-export X_CUSTOM_TITLE="$1"; shift
-exec "$@"
+usage() {
+ echo "Usage: $0 [-h] [-t <title>] [-c <class>] <program> [args [...]]"
+}
+
+
+main() {
+ if [ $# -eq 0 ]; then
+  usage >&2
+  exit 2
+ fi
+ 
+ while getopts 't:c:h' opt; do
+  case "$opt" in
+   t) export X_CUSTOM_TITLE="$OPTARG";;
+   c) export X_CUSTOM_CLASS="$OPTARG";;
+   h) usage; return 0;;
+   ?) usage >&2; return 2;;
+  esac
+ done
+ shift $((OPTIND - 1))
+ 
+ export LD_PRELOAD="$dir/lib$NAME.so"
+ exec "$@"
+}
+
+
+main "$@"
