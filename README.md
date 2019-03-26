@@ -1,27 +1,27 @@
-libxcustomtitle
-===============
+libxcustom
+==========
 
 An LD\_PRELOAD library to change X window titles and/or class hints.
 
 Copyright (C) 2015, 2017, 2019 S. Zeid.  Released under the X11 License.  
-<https://code.s.zeid.me/libxcustomtitle>
+<https://code.s.zeid.me/libxcustom>
 
 
 Usage
 -----
 
-Simply build libxcustomtitle (see below), set the `LD_PRELOAD` environment
+Simply build libxcustom (see below), set the `LD_PRELOAD` environment
 variable to the path to the compiled library, and set `X_CUSTOM_TITLE`
 and/or `X_CUSTOM_CLASS` to the desired values.
 
-    LD_PRELOAD=path/to/libxcustomtitle[32].so \
+    LD_PRELOAD=path/to/libxcustom[32].so \
      X_CUSTOM_TITLE=<title> X_CUSTOM_CLASS=<class> \
      <X program> [arguments [...]]
 
 For convenience, a `run` script is provided that looks in the directory in which
 itself is located for the library:
 
-    path/to/libxcustomtitle/run [-h] [-t <title>] [-c class] <program> [args [...]]
+    path/to/libxcustom/run [-h] [-t <title>] [-c class] <program> [args [...]]
 
 
 Building

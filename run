@@ -1,6 +1,6 @@
 #!/bin/sh
 
-NAME=xcustomtitle
+NAME=xcustom
 
 dir=`dirname "$0"`; dir=`cd "$dir" && pwd`
 

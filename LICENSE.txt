@@ -1,8 +1,8 @@
-libxcustomtitle
+libxcustom
 An LD_PRELOAD library to change X window titles and/or class hints.
 
 Copyright (C) 2015, 2017, 2019 S. Zeid.
-https://code.s.zeid.me/libxcustomtitle
+https://code.s.zeid.me/libxcustom
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal

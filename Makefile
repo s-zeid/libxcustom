@@ -1,4 +1,4 @@
-NAME = xcustomtitle
+NAME = xcustom
 CFLAGS = `pkg-config --cflags x11`
 LDFLAGS = `pkg-config --libs x11`
 
