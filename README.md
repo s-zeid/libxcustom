@@ -21,7 +21,7 @@ and/or `X_CUSTOM_CLASS` to the desired values.
 For convenience, a `run` script is provided that looks in the directory in which
 itself is located for the library:
 
-    path/to/libxcustom/run [-h] [-t <title>] [-c class] <program> [args [...]]
+    path/to/libxcustom/run [-h] [-t <title>] [-c <class>] <program> [args [...]]
 
 
 Building
