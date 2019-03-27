@@ -89,7 +89,7 @@ int XSetClassHint(
  Display *display, Window w,
  XClassHint *class_hints
 ) {
- return next_XSetClassHint(display, w, class_hints);
+ return next_XSetClassHint(display, w, set_class(class_hints));
 }
 
 
