@@ -30,7 +30,6 @@
 
 #define _GNU_SOURCE
 
-
 #include <stdlib.h>
 #include <string.h>
 #include <dlfcn.h>
@@ -39,39 +38,18 @@
 #include <X11/Xlib.h>
 #include <X11/Xutil.h>
 
-
-static char *getenv_default(char *var, char *default_value) {
- char* env_value = getenv(var);
- if (env_value != NULL)
-  return env_value;
- return default_value;
-}
+#include "main.h"
 
 
-static char *get_title(char *default_value) {
- return getenv_default("X_CUSTOM_TITLE", default_value);
-}
-
-
-static char *get_class(char *default_value) {
- return getenv_default("X_CUSTOM_CLASS", default_value);
-}
-
-
-static Bool have_title() {
- return getenv("X_CUSTOM_TITLE") != NULL;
-}
-
-
-static Bool have_class() {
- return getenv("X_CUSTOM_CLASS") != NULL;
-}
+#define _ENV_PREFIX "X_CUSTOM_"
+_ENV_VAR(TITLE, _ENV_PREFIX);
+_ENV_VAR(CLASS, _ENV_PREFIX);
 
 
 static XClassHint* set_class(XClassHint *class_hints) {
- if (have_class()) {
+ if (HAVE_CLASS()) {
   XClassHint *new_hint = XAllocClassHint();
-  char *class = get_class("");
+  char *class = GET_CLASS("");
   new_hint->res_name = class;
   new_hint->res_class = class;
   return new_hint;
@@ -106,9 +84,9 @@ void XSetWMProperties(
  char *argv[], int argc,
  XSizeHints *normal_hints, XWMHints *wm_hints, XClassHint *class_hints
 ) {
- if (have_title()) {
+ if (HAVE_TITLE()) {
   XTextProperty new_prop;
-  char *title = get_title("");
+  char *title = GET_TITLE("");
   Xutf8TextListToTextProperty(display, (char **)&title, 1, XUTF8StringStyle, &new_prop);
   
   next_XSetWMProperties(display, w, &new_prop, &new_prop, argv, argc,
@@ -134,8 +112,8 @@ void XmbSetWMProperties(
  XSizeHints *normal_hints, XWMHints *wm_hints, XClassHint *class_hints
 ) {
  next_XmbSetWMProperties(display, w,
-                         (_Xconst char*)get_title((char*)window_name),
-                         (_Xconst char*)get_title((char*)icon_name),
+                         (_Xconst char*)GET_TITLE((char*)window_name),
+                         (_Xconst char*)GET_TITLE((char*)icon_name),
                          argv, argc, normal_hints, wm_hints, set_class(class_hints));
 }
 
@@ -154,8 +132,8 @@ void Xutf8SetWMProperties(
  XSizeHints *normal_hints, XWMHints *wm_hints, XClassHint *class_hints
 ) {
  next_Xutf8SetWMProperties(display, w,
-                           (_Xconst char*)get_title((char*)window_name),
-                           (_Xconst char*)get_title((char*)icon_name),
+                           (_Xconst char*)GET_TITLE((char*)window_name),
+                           (_Xconst char*)GET_TITLE((char*)icon_name),
                            argv, argc, normal_hints, wm_hints, set_class(class_hints));
 }
 
@@ -176,7 +154,7 @@ int XChangeProperty(
  if (property == XInternAtom(display, "_NET_WM_NAME", False) ||
      property == XInternAtom(display, "_NET_WM_ICON_NAME", False) ||
      property == XA_WM_NAME || property == XA_WM_ICON_NAME) {
-  char *title = get_title((char*)data);
+  char *title = GET_TITLE((char*)data);
   return next_XChangeProperty(display, w,
                               property, XInternAtom(display, "UTF8_STRING", False),
                               format, mode,
@@ -198,9 +176,9 @@ void XSetTextProperty(
 ) {
  if ((property == XInternAtom(display, "_NET_WM_NAME", False) ||
       property == XInternAtom(display, "_NET_WM_ICON_NAME", False) ||
-      property == XA_WM_NAME || property == XA_WM_ICON_NAME) && have_title()) {
+      property == XA_WM_NAME || property == XA_WM_ICON_NAME) && HAVE_TITLE()) {
   XTextProperty new_prop;
-  char *title = get_title("");
+  char *title = GET_TITLE("");
   Xutf8TextListToTextProperty(display, (char **)&title, 1, XUTF8StringStyle, &new_prop);
   return next_XSetTextProperty(display, w, &new_prop, property);
  } else {
