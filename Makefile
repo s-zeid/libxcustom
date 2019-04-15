@@ -11,7 +11,7 @@ lib${NAME}.so: lib${NAME}-native.so
 	mv $^ $@
 
 lib${NAME}%.so: main.c
-	$(CC) $(CFLAGS) -Wall -fPIC -DPIC -c main.c -o ${NAME}.o \
+	$(CC) $(CFLAGS) -Wall -Werror -fPIC -DPIC -c main.c -o ${NAME}.o \
 	 $(if $(filter 32,$*),-m$*,)
 	$(LD) $(LDFLAGS) -ldl -shared ${NAME}.o -o $@ \
 	 $(if $(filter 32,$*),-m elf_i386,)
